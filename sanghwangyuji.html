@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>1소대 상황유지 도우미</title>
+    <style>
+      * {
+        font-family: "맑은 고딕";
+      }
+
+      textarea,
+      input {
+        width: 90vw;
+      }
+
+      textarea {
+        height: 50vh;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>1소대 상황유지 도우미</h1>
+
+    <textarea></textarea>
+
+    <br />
+    <br />
+
+    <form>
+      <input placeholder="내용을 입력하고 엔터를 누르면 기록이 추가됩니다." autofocus />
+    </form>
+
+    <br />
+
+    <div>&copy; 2026 김예환 Ye-Hwan Kim (Sam)</div>
+
+    <script>
+      const textarea = document.querySelector("textarea");
+      const input = document.querySelector("input");
+
+      document.querySelector("form").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        let date = new Date();
+        date.setHours(date.getHours() + 9);
+        date = date.toISOString();
+
+        if (textarea.value === "") {
+          textarea.value = `${date.slice(0, 10)}\n`;
+        }
+
+        textarea.value += `\n[ ${date.slice(11, 16)} ] ${input.value}`;
+        input.value = "";
+
+        textarea.scrollTop = textarea.scrollHeight;
+      });
+    </script>
+  </body>
+</html>

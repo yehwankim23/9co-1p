@@ -1,1 +1,109 @@
-todo
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>1소대 감대철 시간 계산기</title>
+    <style>
+      * {
+        font-family: "맑은 고딕";
+      }
+
+      input {
+        width: 75vw;
+      }
+
+      .red {
+        color: red;
+      }
+
+      .white {
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>1소대 감대철 시간 계산기</h1>
+
+    <div id="now">[ PC 시간 ]</div>
+
+    <br />
+
+    <form>
+      <label>[ 시작 ]</label>
+      <input
+        placeholder="시작 시간을 입력하고 엔터를 누르면 종료 시간을 계산해주고 종료 시간이 되면 알려줍니다. PC 시간 동기화 진행해야 합니다."
+        autofocus
+      />
+    </form>
+
+    <div id="times"></div>
+
+    <br />
+
+    <div>&copy; 2026 김예환 Ye-Hwan Kim (Sam)</div>
+
+    <script>
+      const times = document.querySelector("#times");
+      const input = document.querySelector("input");
+
+      function reset() {
+        input.value = "";
+        input.focus();
+      }
+
+      document.querySelector("form").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        times.innerHTML = "";
+        let start = "";
+
+        for (const character of input.value) {
+          if (["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(character)) {
+            start += character;
+          }
+        }
+
+        input.select();
+
+        start = start.padStart(4, "0");
+        let hour = start.slice(0, 2);
+        let minute = start.slice(2, 4);
+        input.value = `${hour}:${minute}`;
+
+        let date = new Date();
+        date.setHours(parseInt(hour));
+        date.setMinutes(parseInt(minute));
+
+        for (const camera of ["15T", "30고지", "20T", "24T", "30T"]) {
+          date.setMinutes(date.getMinutes() + 12);
+
+          times.innerHTML += `
+            <br />
+            <div class="check">
+              [ ${camera} 종료 ] ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}
+            </div>`;
+        }
+      });
+
+      setInterval(() => {
+        let date = new Date();
+        date.setHours(date.getHours() + 9);
+        date = date.toISOString().replace("-", ":");
+
+        document.querySelector("#now").innerText = `[ PC 시간 ] ${date.slice(11, 19)}`;
+
+        const time = date.slice(11, 16);
+
+        document.querySelectorAll(".check").forEach((element) => {
+          if (!element.innerText.includes(time)) {
+            element.classList.remove("red", "white");
+            return;
+          }
+
+          element.classList.add("red");
+          element.classList.toggle("white");
+        });
+      }, 1000);
+    </script>
+  </body>
+</html>

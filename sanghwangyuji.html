@@ -21,38 +21,67 @@
   <body>
     <h1>1소대 상황유지 도우미</h1>
 
-    <textarea></textarea>
+    <textarea disabled></textarea>
 
     <br />
     <br />
 
     <form>
-      <input placeholder="내용을 입력하고 엔터를 누르면 기록이 추가됩니다." autofocus />
+      <input id="input" placeholder="내용을 입력하고 엔터를 누르면 기록이 추가됩니다." autofocus />
     </form>
 
+    <br />
+
+    <input id="reset" type="button" value="초기화" />
+
+    <br />
     <br />
 
     <div>&copy; 2026 김예환 Ye-Hwan Kim (Sam)</div>
 
     <script>
       const textarea = document.querySelector("textarea");
-      const input = document.querySelector("input");
+      const input = document.querySelector("#input");
+
+      let today = "";
 
       document.querySelector("form").addEventListener("submit", (event) => {
         event.preventDefault();
 
         let date = new Date();
         date.setHours(date.getHours() + 9);
-        date = date.toISOString();
+
+        const [ymd, hm] = date.toISOString().slice(0, 16).split("T");
 
         if (textarea.value === "") {
-          textarea.value = `${date.slice(0, 10)}\n`;
+          textarea.disabled = false;
+          textarea.value = `${ymd}\n`;
+          today = ymd;
+        } else if (ymd !== today) {
+          textarea.value = `\n\n${ymd}\n`;
+          today = ymd;
         }
 
-        textarea.value += `\n[ ${date.slice(11, 16)} ] ${input.value}`;
+        textarea.value += `\n[ ${hm} ] ${input.value}`;
         input.value = "";
 
         textarea.scrollTop = textarea.scrollHeight;
+      });
+
+      function reset() {
+        textarea.disabled = true;
+        textarea.value = "";
+
+        input.value = "";
+        input.focus();
+      }
+
+      document.querySelector("#reset").addEventListener("click", () => {
+        reset();
+      });
+
+      window.addEventListener("load", () => {
+        reset();
       });
     </script>
   </body>
